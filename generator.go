@@ -271,10 +271,15 @@ func (g *generator) generateFromEvents() {
 						break
 					}
 					if event.Status == "start" || event.Status == "stop" || event.Status == "die" {
-						log.Printf("Received event %s for container %s", event.Status, event.ID[:12])
-						// fanout event to all watchers
-						for _, watcher := range watchers {
-							watcher <- event
+						// use these two lines if using new go-dockerclient
+						// log.Printf("Received event %s for container %s (%s)", event.Status, event.ID[:12], event.Actor.Attributes["name"])
+						// if strings.HasPrefix(event.Actor.Attributes["name"], "simple-ss") == false {
+						log.Printf("Received event %s for container %s (%s)", event.Status, event.ID[:12], event.From)
+						if strings.HasPrefix(event.From, "connectify/simple-ss") == false {
+							// fanout event to all watchers
+							for _, watcher := range watchers {
+								watcher <- event
+							}
 						}
 					}
 				case <-time.After(10 * time.Second):
