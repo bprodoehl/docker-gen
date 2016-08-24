@@ -1,4 +1,5 @@
 .git
+dist/darwin
+dist/linux
 docker-gen
-dist
 *.gz
